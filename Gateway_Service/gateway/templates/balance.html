@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    마이페이지
+{% endblock %}
+
+{% block content %}
+    {% if usererror %}
+        <div class="alert alert-danger">{{ usererror }}</div>
+        <input type="button" class="btn btn-outline-secondary" onclick="history.back();" value="Back"/>
+    {% else %}
+        <div class="col-8 mt-3">
+            <div class="p-1 my-1">
+                <h3 style="text-align: center; margin-bottom: 6px;">사용자 <b>정보</b></h3>
+            </div>
+            <table class="table" style="border-color: white;">
+                <tbody class="font">
+                <tr>
+                    <td style="border-color: #efeeee;">
+                        <div style="margin: 10px;">
+                            <h3 style="margin-bottom: 20px;">{{ user.last_name }} {{ user.name }}</h3>
+                            <h4><b>이메일:</b></h4>
+                            <h4><b>진행 상황:</b></h4>
+                            <h4><b>등급 할인:</b></h4>
+                            <h4><b>잔액:</b></h4>
+                        </div>
+
+                    <td style="border-color: #efeeee;">
+                    <div style="margin-top: 64px;">
+                        <h4>{{ user.email }}</h4>
+                        <h4>{{ loyalty.status_loyalty }}</h4>
+                        <h4>{{ loyalty.discount }}</h4>
+                        <h4>{{ loyalty.balance }}</h4>
+                    </div>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-center">
+                <h3 style="font-weight: bold">내 예약 현황</h3>
+            </div>
+            <div class="btn-group btn-block px-1">
+                <button id="example_2_2" onclick="document.getElementById('example_2').style.display='block';
+                                                 document.getElementById('example_4').style.display='none';
+                                                 document.getElementById('example_2_2').className='btn btn-outline-secondary active';
+                                                 document.getElementById('example_4_4').className='btn btn-outline-secondary';"
+                                                 class="btn btn-outline-secondary active">현재 예약</button>
+                <button id="example_4_4" onclick="document.getElementById('example_2').style.display='none';
+                                                  document.getElementById('example_4').style.display='block';
+                                                  document.getElementById('example_4_4').className='btn btn-outline-secondary active';
+                                                  document.getElementById('example_2_2').className='btn btn-outline-secondary';"
+                                                  class="btn btn-outline-secondary">이전 예약</button>
+            </div>
+            <div id="example_2" style="display: block">
+            <hr>
+                {% for book, hotel, pay in currbookhot %}
+                    {% if pay.status == "NEW" %}
+                    <div class = "font my-4 p-2">
+                        <a href={% url 'booking_info' book.booking_uid %}><h3>호텔명: {{ hotel.title }}</h3></a>
+                        <p class="d-inline-block text-truncate" style="max-width:800px;">{{ book.date_start }} - {{ book.date_end }}</p>
+                        <div class="row">
+                            <div class="col-8">
+                                <p>주소: {{ hotel.cities }}, {{ hotel.location }}</p>
+                                <p style="font-weight: bold">결재 대기중</p>
+                            </div>
+                            <div class="col-4">
+                                <p>생성날짜: {{ book.date_create }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class = "font my-4 p-2">
+                        <a href={% url 'booking_info' book.booking_uid %}><h3>호텔명: {{ hotel.title }}</h3></a>
+                        <p class="d-inline-block text-truncate" style="max-width:800px;">{{ book.date_start }} - {{ book.date_end }}</p>
+                        <div class="row">
+                            <div class="col-8">
+                                <p>주소: {{ hotel.cities }}, {{ hotel.location }}</p>
+                                <p style="font-weight: bold">결재 완료</p>
+                            </div>
+                            <div class="col-4">
+                                <p>생성날짜: {{ book.date_create }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="example_4" style="display: none">
+            <hr>
+                {% for book, hotel, pay in histbookhot %}
+                    {% if pay.status == "CANCELED" %}
+                    <div class = "font my-4 p-2">
+                        <a href={% url 'booking_info' book.booking_uid %}><h3>호텔명: {{ hotel.title }}</h3></a>
+                        <p class="d-inline-block text-truncate" style="max-width:800px;">{{ book.date_start }} - {{ book.date_end }}</p>
+                        <div class="row">
+                            <div class="col-8">
+                                <p>주소: {{ hotel.cities }}, {{ hotel.location }}</p>
+                                <p style="font-weight: bold">Canceled</p>
+                            </div>
+                            <div class="col-4">
+                                <p>생성날짜: {{ book.date_create }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class = "font my-4 p-2">
+                        <a href={% url 'booking_info' book.booking_uid %}><h3>호텔명: {{ hotel.title }}</h3></a>
+                        <p class="d-inline-block text-truncate" style="max-width:800px;">{{ book.date_start }} - {{ book.date_end }}</p>
+                        <div class="row">
+                            <div class="col-8">
+                                <p>주소: {{ hotel.cities }}, {{ hotel.location }}</p>
+                                <p style="font-weight: bold">Funds reversed</p>
+                            </div>
+                            <div class="col-4">
+                                <p>생성날짜: {{ book.date_create }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
